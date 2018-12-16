@@ -1,5 +1,6 @@
 module Bucketchain.Logger.HTTP.Token
-  ( Token(..)
+  ( Token
+  , token
   , label
   , tokenizer
   , date
@@ -29,6 +30,10 @@ import Node.HTTP (Request)
 -- | It has a label and a tokenizer.
 data Token = Token String (Http.Http -> Tokenizer String)
 
+-- | Constructor function of `Token`.
+token :: String -> (Http.Http -> Tokenizer String) -> Token
+token = Token
+
 -- | Get label of token.
 label :: Token -> String
 label (Token x _) = x
@@ -39,45 +44,45 @@ tokenizer (Token _ x) = x
 
 -- | A token of current date formetted ISO.
 date :: Token
-date = Token "date" \_ -> do
+date = token "date" \_ -> do
   t <- ask
   liftEffect $ toISOString t
 
 -- | A token of HTTP version.
 httpVersion :: Token
-httpVersion = Token "http-version" $ pure <<< Http.httpVersion
+httpVersion = token "http-version" $ pure <<< Http.httpVersion
 
 -- | A token of request url.
 url :: Token
-url = Token "url" $ pure <<< Http.requestOriginalURL
+url = token "url" $ pure <<< Http.requestOriginalURL
 
 -- | A token of request method.
 method :: Token
-method = Token "method" $ pure <<< Http.requestMethod
+method = token "method" $ pure <<< Http.requestMethod
 
 -- | A token of referrer.
 referrer :: Token
-referrer = Token "referrer" \http -> do
+referrer = token "referrer" \http -> do
   pure $ fromMaybe
     (fromMaybe "-" $ lookup "referrer" $ Http.requestHeaders http)
     $ lookup "referer" $ Http.requestHeaders http
 
 -- | A token of user agent.
 userAgent :: Token
-userAgent = Token "user-agent" \http -> do
+userAgent = token "user-agent" \http -> do
   pure $ fromMaybe "-" $ lookup "user-agent" $ Http.requestHeaders http
 
 -- | A token of remote address.
 remoteAddr :: Token
-remoteAddr = Token "remote-addr" $ pure <<< _remoteAddress <<< Http.toRequest
+remoteAddr = token "remote-addr" $ pure <<< _remoteAddress <<< Http.toRequest
 
 -- | A token of status code.
 status :: Token
-status = Token "status" $ pure <<< show <<< Http.statusCode
+status = token "status" $ pure <<< show <<< Http.statusCode
 
 -- | A token of response time.
 responseTime :: Token
-responseTime = Token "response-time" \http -> do
+responseTime = token "response-time" \http -> do
   t <- ask
   t' <- liftEffect now
   pure $ (show $ getTime t' - getTime t) <> "ms"
