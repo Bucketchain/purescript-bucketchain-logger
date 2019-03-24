@@ -6,8 +6,16 @@ Logger middlewares of [Bucketchain](https://github.com/Bucketchain/purescript-bu
 
 ## Installation
 
+### Bower
+
 ```
-bower install purescript-bucketchain-logger
+$ bower install purescript-bucketchain-logger
+```
+
+### Spago
+
+```
+$ spago install bucketchain-logger
 ```
 
 ## Documentation
