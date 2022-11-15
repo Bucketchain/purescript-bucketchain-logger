@@ -1,5 +1,5 @@
 'use strict';
 
-exports._remoteAddress = function(req) {
+export function _remoteAddress(req) {
   return req.socket.remoteAddress;
 }

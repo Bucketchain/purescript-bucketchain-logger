@@ -27,7 +27,7 @@ withHTTPLogger tokens next = do
         labels =  label <$> tokens
     vs <- sequence $ tokenize <$> tokens
     let msg = joinWith "\t" $ part <$> zip labels vs
-    void $ writeString stdout UTF8 (msg <> "\n") $ pure unit
+    void $ writeString stdout UTF8 (msg <> "\n") $ const $ pure unit
   next
   where
     part (Tuple l v) = l <> ":" <> v

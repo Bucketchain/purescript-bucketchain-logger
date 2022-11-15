@@ -20,5 +20,5 @@ withErrorLogger next = do
     Right r -> pure r
     Left err -> do
       let msg = (fromMaybe "" $ stack err) <> "\n"
-      liftEffect $ void $ writeString stdout UTF8 msg $ pure unit
+      liftEffect $ void $ writeString stdout UTF8 msg $ const $ pure unit
       throwError err

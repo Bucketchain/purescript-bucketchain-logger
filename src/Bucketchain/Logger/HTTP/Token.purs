@@ -82,7 +82,7 @@ status = token "status" $ pure <<< show <<< Http.statusCode
 
 -- | A token of response time.
 responseTime :: Token
-responseTime = token "response-time" \http -> do
+responseTime = token "response-time" \_ -> do
   t <- ask
   t' <- liftEffect now
   pure $ (show $ getTime t' - getTime t) <> "ms"
